@@ -1,36 +1,28 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lesson desk
 
-## Getting Started
+A Next.js App Router slice for a 90-minute AI-assisted coding session. Learners open a tutor, request a lesson, and review upcoming lessons.
 
-First, run the development server:
+The app starts with a red suite. That is the exercise.
+
+| Doc | Who it is for |
+| --- | --- |
+| [EXERCISE.md](./EXERCISE.md) | The brief an interviewer hands you. Start here. |
+| [MOCK-INTERVIEW.md](./MOCK-INTERVIEW.md) | The spoken walkthrough and the prompts. Open it after a timed pass, or use it as a script. |
+
+## Run
 
 ```bash
+npm install
+npm test
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000), then a tutor such as `/tutors/tutor_a`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+`npm test` exits with failures on a fresh checkout. Two tests already pass. They guard behavior that should stay true while you fix the rest.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`npm run lint` warns on one effect. `npx tsc --noEmit` reports one error in `components/LessonList.tsx`. Both are part of the exercise.
 
-## Learn More
+## Stack
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Next.js 16 (App Router, Cache Components), React 19, TypeScript, Vitest 3, React Testing Library. Vitest is pinned to 3 so the suite runs on Node 21 as well as current LTS.
