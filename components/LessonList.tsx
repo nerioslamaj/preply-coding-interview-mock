@@ -1,32 +1,37 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { Lesson } from "@/lib/lessons";
+import { formatLessonTime, toLesson, type Lesson, type WireLesson } from "@/lib/lessons";
 
 export function LessonList({
   tutorId,
+  subject = "",
+  onSubjectChange,
+  timeZone = "UTC",
 }: {
   tutorId: string;
+  subject?: string;
+  onSubjectChange?: (next: string) => void;
   timeZone?: string;
 }) {
   const [lessons, setLessons] = useState<Lesson[]>([]);
-  const [subject, setSubject] = useState("");
 
   useEffect(() => {
     let cancelled = false;
     const params = new URLSearchParams({ tutorId, status: "upcoming" });
-    if (subject) params.set("subject", subject);
+    const trimmed = subject.trim();
+    if (trimmed) params.set("subject", trimmed);
+
     fetch(`/api/lessons?${params.toString()}`)
       .then((response) => response.json())
-      .then((body: { lessons: Lesson[] }) => {
-        if (!cancelled) setLessons(body.lessons);
+      .then((body: { lessons: WireLesson[] }) => {
+        if (!cancelled) setLessons(body.lessons.map(toLesson));
       });
+
     return () => {
       cancelled = true;
     };
-  }, []);
-
-  const visible = lessons.filter((lesson) => lesson.status === "scheduled");
+  }, [tutorId, subject]);
 
   return (
     <section aria-labelledby="upcoming-heading">
@@ -35,16 +40,22 @@ export function LessonList({
         <input
           id="subject"
           value={subject}
-          onChange={(event) => setSubject(event.target.value)}
+          onChange={(event) => onSubjectChange?.(event.target.value)}
         />
       </label>
-      <ul className="lessons">
-        {visible.map((lesson) => (
-          <li key={lesson.id}>
-            {lesson.subject} {lesson.scheduledAt?.slice(11, 16)}
-          </li>
-        ))}
-      </ul>
+      {lessons.length === 0 ? (
+        <p className="empty" aria-live="polite">
+          {subject.trim() ? `No upcoming ${subject.trim()} lessons` : "No upcoming lessons"}
+        </p>
+      ) : (
+        <ul className="lessons">
+          {lessons.map((lesson) => (
+            <li key={lesson.id}>
+              {lesson.subject} {formatLessonTime(lesson.scheduledAt, timeZone)}
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }
