@@ -4,7 +4,7 @@ import { useState } from "react";
 
 export function RequestForm({ slotId }: { slotId: string | null }) {
   const [agreed, setAgreed] = useState(false);
-  const disabled = !slotId && !agreed;
+  const disabled = !slotId || !agreed;
 
   return (
     <form
